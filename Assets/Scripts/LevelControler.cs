@@ -12,8 +12,12 @@ public class LevelControler : MonoBehaviour {
     private int fruits = 0;
     private int bombs = 0;
     private int crystals = 0;
-   
-  
+
+
+    public LifePanel lifePanel;
+    public CoinPanel coinPanel;
+    public FruitPanel fruitPanel;
+
 
     // Use this for initialization
 
@@ -39,21 +43,37 @@ public class LevelControler : MonoBehaviour {
   {
         this.bombs += bombs;
         Debug.Log("Bomb added");
+        coinPanel.UpdateCoins(this.coins);
     }
-    public void AddMushrooms(int bombs)
+    public void AddMushrooms(int mushrooms)
     {
-        this.bombs += bombs;
+        this.mushrooms += mushrooms;
         Debug.Log("Bomb added");
     }
-    public void AddFruits(int bombs)
+    public void AddFruits(int fruits)
     {
-        this.bombs += bombs;
+        this.fruits += fruits;
+        Debug.Log("Bomb added");
+        fruitPanel.UpdatePanel(this.fruits);
+    }
+    public void AddCrystals(int crystals)
+    {
+        this.crystals += crystals;
         Debug.Log("Bomb added");
     }
-    public void AddCrystals(int bombs)
+
+    public void OnRabitDeath(Controler rabit)
     {
-        this.bombs += bombs;
-        Debug.Log("Bomb added");
+        rabit.transform.position = initRabbitPos;
+        if (lifePanel != null)
+        {
+       //   rabit.MinusLife();
+        //  lifePanel.MinusLife(rabit.Lifes);
+        //    if (rabit.Lifes == 0)
+        //    {
+         //       OnPlayerLose();
+         //   }
+        }
     }
 
 }

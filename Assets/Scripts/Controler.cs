@@ -5,11 +5,14 @@ using UnityEngine.UI;
 
 public class Controler : MonoBehaviour {
 
+    public static Controler lastRabit = null;
+
     public float speed = 7f;
     public float jumpingSpeed = 7f;
     private float movement = 0f;
     public float jumpTime = 1f;
     public float underBombime = 4f;
+    private int lifes = 3;
 
     private Animator rabitAnim = null;
     private SpriteRenderer spriteRenderer;
@@ -32,6 +35,10 @@ public class Controler : MonoBehaviour {
     private Color bonusColor;
     private Color initColor;
 
+    void Awake()
+    {
+        lastRabit = this;
+    }
     void Start()
     {
         rabbit = GetComponent<Rigidbody2D>();
@@ -46,6 +53,7 @@ public class Controler : MonoBehaviour {
         bonusColor = new Color(3f, 0.85f, 0.30f, 255f);
         
     }
+    
 
     void Update()
     {
@@ -122,7 +130,7 @@ public class Controler : MonoBehaviour {
                 if (this.JumpTime < this.MaxJumpTime)
                 {
                     Vector2 vel = rabbit.velocity;
-                    vel.y = JumpSpeed * (1.0f - JumpTime / MaxJumpTime);
+                    vel.y = JumpSpeed * (2.0f - JumpTime / MaxJumpTime);
                     rabbit.velocity = vel;
                 }
 
@@ -180,6 +188,11 @@ public class Controler : MonoBehaviour {
         isDefenseless = false;
     }
 
+    public void Jump()
+    {
+        rabbit.AddForce(Vector2.up * 3f, ForceMode2D.Impulse);
+    }
+
     public bool IsDefenseless {
         get {
             return isDefenseless;
@@ -191,5 +204,36 @@ public class Controler : MonoBehaviour {
         }
     }
 
+    public void Die()
+    {
+       // PlayDeathSound();
+        rabitAnim.SetTrigger("die");
+        StartCoroutine(WaitForDeathAnim());
+    }
 
+    IEnumerator WaitForDeathAnim()
+    {
+        yield return new WaitForSeconds(rabitAnim.GetCurrentAnimatorStateInfo(0).length / rabitAnim.GetCurrentAnimatorStateInfo(0).speed);
+       // LevelControler.current.OnRabitDeath(this);
+    }
+
+    public void MinusLife()
+    {
+        if (lifes > 0)
+            lifes--;
+    }
+
+    public void PlusLife()
+    {
+        if (lifes < 3)
+            lifes++;
+    }
+
+    public void Stop()
+    {
+        rabitAnim.SetBool("run", false);  
+        Vector2 velocity = rabbit.velocity;
+        velocity.x = 0;
+        rabbit.velocity = velocity;
+    }
 }
